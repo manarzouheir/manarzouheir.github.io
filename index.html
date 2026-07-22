@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio de Manar Zouheir, développeuse Full Stack spécialisée dans la création d’applications web modernes, rapides et accessibles.">
+  <meta name="theme-color" content="#566230">
+  <title>Manar Zouheir — Développeuse Full Stack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            olive: { 50:'#f6f7ec',100:'#eef1df',200:'#dbe0b6',300:'#c1c48a',400:'#a1a869',500:'#7f894d',600:'#6b7a3f',700:'#566230',800:'#444f28',900:'#363e20' }
+          },
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { overflow-x: hidden; }
+    ::selection { color: white; background: #6b7a3f; }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.75,.25,1); }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .hero-enter { animation: enter .8s cubic-bezier(.2,.75,.25,1) both; }
+    .hero-delay { animation: enter .8s .16s cubic-bezier(.2,.75,.25,1) both; }
+    .card { transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+    .card:hover { transform: translateY(-7px); border-color: #a1a869; box-shadow: 0 24px 50px -22px rgba(68,79,40,.45); }
+    .button { transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease; }
+    .button:hover { transform: translateY(-2px); }
+    .button:active { transform: scale(.97); }
+    .clickable { position: relative; overflow: hidden; cursor: pointer; }
+    .ripple { position: absolute; border-radius: 999px; pointer-events: none; background: rgba(255,255,255,.45); transform: scale(0); animation: ripple .6s ease-out; }
+    .project-card:focus-visible { outline: 3px solid #a1a869; outline-offset: 4px; }
+    .avatar-card { isolation:isolate; border:1px solid rgba(193,196,138,.5); background:linear-gradient(145deg,#6b7a3f,#444f28); box-shadow:0 30px 60px -28px rgba(54,62,32,.65); }
+    .avatar-card::before, .avatar-card::after { content:''; position:absolute; border-radius:999px; background:rgba(255,255,255,.08); z-index:-1; }
+    .avatar-card::before { width:180px; height:180px; top:-55px; right:-45px; }
+    .avatar-card::after { width:110px; height:110px; bottom:28px; left:-30px; }
+    .avatar { animation:avatar-story 8s cubic-bezier(.4,0,.2,1) infinite; filter:drop-shadow(0 18px 18px rgba(30,36,18,.25)); transform-origin:center 65%; }
+    .thinking-hand { animation:thinking-phase 8s ease-in-out infinite; transform-origin:195px 220px; }
+    .wave-hand { transform-box:fill-box; transform-origin:75% 85%; animation:wave-phase 8s ease-in-out infinite; }
+    .avatar-eye { transform-box:fill-box; transform-origin:center; animation:story-eyes 8s infinite; }
+    .avatar-brows { transform-box:fill-box; transform-origin:center; animation:brow-surprise 8s infinite; }
+    .thought-bubbles { animation:thought-phase 8s ease-in-out infinite; }
+    .avatar-scene { position:absolute; inset:0; overflow:hidden; }
+    .avatar-frame { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:opacity .4s ease; }
+    .emoji-character { display:flex; align-items:center; justify-content:center; font-size:8.25rem; line-height:1; user-select:none; filter:drop-shadow(0 16px 12px rgba(24,30,12,.25)); }
+    .emoji-character span { display:inline-block; }
+    .emoji-wave { margin-left:-1.2rem; transform-origin:70% 75%; }
+    .girl-emoji { position:relative; display:inline-grid !important; place-items:center; }
+    .girl-face { position:relative; z-index:1; }
+    .girl-glasses { position:absolute; z-index:2; left:50%; top:43%; font-size:.46em; line-height:1; transform:translate(-50%,-50%) scaleX(.92); filter:drop-shadow(0 2px 1px rgba(0,0,0,.2)); }
+    .waving-girl .girl-glasses { left:45%; top:42%; font-size:.31em; transform:translate(-50%,-50%) scaleX(.9); }
+    .thinking-symbol { position:absolute; right:2.5rem; top:2.5rem; font-size:2.8rem; animation:thought-bob 2s ease-in-out infinite; }
+    .memoji-avatar { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center; transform:scale(.97); transition:transform 1.1s cubic-bezier(.16,1,.3,1),filter .6s ease; }
+    .wave-frame-a { opacity:.88; }
+    .wave-frame-b { opacity:0; }
+    .avatar-card.is-greeting .memoji-avatar { transform:scale(1.025); filter:saturate(1.05) brightness(1.02); }
+    .avatar-card.is-greeting .wave-frame-a { animation:wave-frame-a 2.4s 1.05s steps(1,end) forwards; }
+    .avatar-card.is-greeting .wave-frame-b { animation:wave-frame-b 2.4s 1.05s steps(1,end) forwards; }
+    .avatar-thinking { opacity:1; transform:scale(1); transition:opacity .55s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
+    .avatar-waving { opacity:0; transform:scale(.96); transition:opacity .55s .35s ease, transform 1s .25s cubic-bezier(.16,1,.3,1); }
+    .avatar-greeting { display:flex; align-items:center; gap:.45rem; opacity:0; transform:translateY(-12px) scale(.8) rotate(4deg); transition:opacity .35s 1.1s ease,transform .55s 1.05s cubic-bezier(.16,1,.3,1); }
+    .avatar-card.is-greeting .avatar-thinking { opacity:0; transform:scale(1.08); }
+    .avatar-card.is-greeting .avatar-waving { opacity:1; transform:scale(1.16); }
+    .avatar-card.is-greeting .waving-girl { transform-origin:70% 75%; animation:emoji-wave .42s 1.15s ease-in-out 4 alternate; }
+    .avatar-card.is-greeting .avatar-greeting { opacity:1; transform:translateY(0) scale(1); }
+    .avatar-caption { position:absolute; right:18px; bottom:18px; left:18px; z-index:5; display:flex; align-items:center; justify-content:space-between; gap:1rem; border:1px solid rgba(255,255,255,.18); border-radius:1.25rem; background:rgba(32,39,24,.58); padding:.85rem 1rem; color:white; backdrop-filter:blur(12px); box-shadow:0 14px 30px -18px rgba(0,0,0,.6); }
+    .avatar-caption strong { display:block; font-size:.82rem; }
+    .avatar-caption span { color:#dbe0b6; font-size:.68rem; }
+    .avatar-caption i { width:9px; height:9px; flex:0 0 auto; border-radius:50%; background:#c1c48a; box-shadow:0 0 0 5px rgba(193,196,138,.13); animation:caption-pulse 2s ease-in-out infinite; }
+    #project-modal { transition: opacity .25s ease; }
+    #project-modal .modal-panel { transition: transform .3s cubic-bezier(.2,.75,.25,1), opacity .25s ease; }
+    #project-modal.modal-hidden { opacity: 0; pointer-events: none; }
+    #project-modal.modal-hidden .modal-panel { opacity: 0; transform: translateY(24px) scale(.97); }
+    .screenshot-slot { position:relative; display:grid; min-height:150px; width:100%; place-items:center; overflow:hidden; border:1px dashed #c1c48a; border-radius:1.25rem; background:linear-gradient(135deg,#f6f7ec,#eef1df); cursor:zoom-in; transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease; }
+    .screenshot-slot:hover { transform:translateY(-4px); border-color:#7f894d; box-shadow:0 18px 30px -20px rgba(54,62,32,.55); }
+    .screenshot-slot img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .screenshot-slot span { padding:1rem; text-align:center; color:#6b7a3f; font-size:.75rem; font-weight:700; }
+    .screenshot-slot .role-badge { position:absolute; left:12px; top:12px; z-index:2; border-radius:999px; background:rgba(54,62,32,.88); padding:.35rem .65rem; color:white; font-size:.65rem; font-style:normal; font-weight:800; letter-spacing:.04em; backdrop-filter:blur(6px); }
+    .gallery-filter { border:1px solid #dbe0b6; border-radius:999px; background:white; padding:.55rem 1rem; color:#566230; font-size:.78rem; font-weight:700; transition:background-color .25s ease,color .25s ease,border-color .25s ease,transform .2s ease; }
+    .gallery-filter:hover { border-color:#7f894d; transform:translateY(-2px); }
+    .gallery-filter.active { border-color:#566230; background:#566230; color:white; box-shadow:0 8px 20px -10px rgba(54,62,32,.7); }
+    .gallery-grid.is-changing { opacity:.25; transform:translateY(6px); }
+    .gallery-grid { transition:opacity .2s ease,transform .2s ease; }
+    #image-lightbox { transition:opacity .25s ease; }
+    #image-lightbox.lightbox-hidden { opacity:0; pointer-events:none; }
+    #image-lightbox img { transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .25s ease; }
+    #image-lightbox.lightbox-hidden img { opacity:0; transform:scale(.94); }
+    .copy-email { position:relative; overflow:hidden; transition:transform .25s ease,background-color .25s ease; }
+    .copy-email:hover { transform:translateY(-3px); background:rgba(255,255,255,.14); }
+    .copy-email .copy-icon { transition:transform .35s cubic-bezier(.16,1,.3,1),background-color .25s ease; }
+    .copy-email.copied .copy-icon { transform:scale(1.12) rotate(-6deg); background:#eef1df; color:#566230; }
+    #copy-toast { transition:opacity .3s ease,transform .35s cubic-bezier(.16,1,.3,1); }
+    #copy-toast.toast-hidden { opacity:0; pointer-events:none; transform:translate(-50%,18px) scale(.94); }
+    .cursor-star { position:fixed; z-index:9999; pointer-events:none; color:var(--star-color,#7f894d); font-size:var(--star-size,12px); line-height:1; text-shadow:0 0 9px rgba(127,137,77,.5); will-change:transform,opacity; animation:star-trail .75s cubic-bezier(.16,.7,.3,1) forwards; }
+    #scroll-progress { transform-origin: left; transform: scaleX(0); }
+    .nav-link { position: relative; }
+    .nav-link::after { content:''; position:absolute; left:0; right:0; bottom:-6px; height:2px; border-radius:99px; background:#6b7a3f; transform:scaleX(0); transition:transform .25s ease; }
+    .nav-link:hover::after, .nav-link.active::after { transform:scaleX(1); }
+    .hero-grid { background-image:linear-gradient(rgba(107,122,63,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(107,122,63,.07) 1px,transparent 1px); background-size:42px 42px; mask-image:linear-gradient(to bottom,black,transparent 92%); }
+    .role-drop { position:relative; display:inline-block; white-space:nowrap; font-size:.82rem; font-weight:800; letter-spacing:.26em; text-transform:uppercase; color:#566230; }
+    .role-drop span { display:inline-block; opacity:0; transform-origin:center bottom; animation:role-fall 5.6s .15s cubic-bezier(.16,.82,.28,1) forwards; }
+    .role-drop::after { content:''; position:absolute; left:50%; bottom:-11px; width:100%; height:3px; border-radius:999px; background:linear-gradient(90deg,transparent,#a1a869,#566230,#a1a869,transparent); opacity:0; transform:translateX(-50%) scaleX(0); animation:role-impact 5.6s .15s ease-out forwards; }
+    .gradient-word { background:linear-gradient(100deg,#566230,#a1a869,#444f28); background-size:200% auto; color:transparent; background-clip:text; -webkit-background-clip:text; animation:gradient-flow 5s linear infinite; }
+    .hero-visual { transform-style:preserve-3d; transition:transform .25s ease-out; }
+    .code-window { background:#202718; box-shadow:inset 0 1px 0 rgba(255,255,255,.08); }
+    .code-line { opacity:0; transform:translateX(-8px); animation:code-in .45s ease forwards; }
+    .code-line:nth-child(2) { animation-delay:.25s; }.code-line:nth-child(3) { animation-delay:.5s; }.code-line:nth-child(4) { animation-delay:.75s; }.code-line:nth-child(5) { animation-delay:1s; }
+    .section-number { font-variant-numeric:tabular-nums; color:transparent; -webkit-text-stroke:1px rgba(107,122,63,.28); }
+    .core-stack { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; overflow:hidden; border:1px solid #dbe0b6; border-radius:2rem; background:#dbe0b6; box-shadow:0 22px 45px -30px rgba(54,62,32,.5); }
+    .core-tech { position:relative; display:flex; min-height:112px; align-items:center; gap:1rem; overflow:hidden; background:rgba(255,255,255,.94); padding:1.25rem; transition:background-color .3s ease,color .3s ease; }
+    .core-tech::after { content:''; position:absolute; right:-28px; bottom:-38px; width:90px; height:90px; border-radius:50%; background:#eef1df; transition:transform .4s ease,background-color .3s ease; }
+    .core-tech:hover { background:#566230; color:white; }
+    .core-tech:hover::after { background:rgba(255,255,255,.1); transform:scale(1.4); }
+    .core-tech-mark { position:relative; z-index:2; display:grid; width:52px; height:52px; flex:0 0 auto; place-items:center; border-radius:16px; background:#eef1df; color:#566230; font-size:.92rem; font-weight:950; letter-spacing:-.03em; transition:transform .3s ease,background-color .3s ease; }
+    .core-tech:hover .core-tech-mark { background:white; transform:rotate(-5deg) scale(1.06); }
+    .core-tech-copy { position:relative; z-index:2; }
+    .core-tech-copy strong { display:block; font-size:.95rem; }
+    .core-tech-copy span { display:block; margin-top:.25rem; color:#7f894d; font-size:.72rem; transition:color .3s ease; }
+    .core-tech:hover .core-tech-copy span { color:#dbe0b6; }
+    .practice-panel { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; border:1px solid #dbe0b6; border-radius:1.5rem; background:rgba(255,255,255,.75); padding:1.25rem; }
+    .practice-panel strong { margin-right:auto; color:#444f28; font-size:.85rem; }
+    .practice-panel span { border:1px solid #eef1df; border-radius:999px; background:white; padding:.55rem .85rem; color:#566230; font-size:.75rem; font-weight:700; transition:border-color .2s ease,transform .2s ease; }
+    .practice-panel span:hover { border-color:#a1a869; transform:translateY(-2px); }
+    #competences article { border-top:3px solid transparent; }
+    #competences article:hover { border-top-color:#7f894d; }
+    #competences article > div:last-child span { border:1px solid #eef1df; transition:border-color .2s ease,background-color .2s ease,color .2s ease; }
+    #competences article > div:last-child span:hover { border-color:#a1a869; background:#eef1df; color:#444f28; }
+    .timeline { position:relative; }
+    .timeline::before { content:''; position:absolute; left:24px; top:16px; bottom:16px; width:2px; background:linear-gradient(#a1a869,#566230); transform-origin:top; }
+    .timeline-item { position:relative; padding-left:72px; }
+    .timeline-dot { position:absolute; left:13px; top:26px; z-index:2; display:grid; width:24px; height:24px; place-items:center; border:6px solid #f6f7ec; border-radius:50%; background:#566230; box-shadow:0 0 0 1px #a1a869; }
+    .timeline-card { position:relative; overflow:hidden; transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease; }
+    .timeline-card::after { content:''; position:absolute; right:-35px; top:-35px; width:115px; height:115px; border-radius:50%; background:rgba(193,196,138,.16); transition:transform .45s ease; }
+    .timeline-card:hover { transform:translateX(7px); border-color:#a1a869; box-shadow:0 24px 45px -24px rgba(68,79,40,.45); }
+    .timeline-card:hover::after { transform:scale(1.35); }
+    .stack-lab { position:relative; min-height:390px; overflow:hidden; background:radial-gradient(circle at center,rgba(193,196,138,.28),transparent 38%),#fff; }
+    .stack-lab::before { content:''; position:absolute; left:50%; top:50%; width:270px; height:270px; border:1px dashed rgba(107,122,63,.28); border-radius:50%; transform:translate(-50%,-50%); }
+    .stack-lab::after { content:''; position:absolute; left:50%; top:50%; width:175px; height:175px; border:1px solid rgba(107,122,63,.16); border-radius:50%; transform:translate(-50%,-50%); }
+    .stack-core { position:absolute; left:50%; top:50%; z-index:3; display:grid; width:112px; height:112px; place-items:center; border:7px solid rgba(255,255,255,.8); border-radius:50%; background:linear-gradient(145deg,#7f894d,#444f28); color:#fff; text-align:center; box-shadow:0 22px 45px -18px rgba(54,62,32,.65); transform:translate(-50%,-50%); }
+    .tech-node { position:absolute; z-index:4; display:grid; min-width:68px; height:68px; place-items:center; border:1px solid #dbe0b6; border-radius:22px; background:rgba(255,255,255,.92); padding:.5rem; color:#444f28; font-size:.75rem; font-weight:900; box-shadow:0 14px 30px -18px rgba(54,62,32,.6); backdrop-filter:blur(8px); transition:transform .25s ease,background-color .25s ease,color .25s ease; }
+    .tech-node:hover { z-index:7; background:#566230; color:white; transform:scale(1.12) rotate(2deg); }
+    .tech-node b { display:block; font-size:1.05rem; line-height:1; }
+    .node-java { left:12%; top:18%; animation:node-drift 4.4s ease-in-out infinite; }
+    .node-js { right:12%; top:17%; animation:node-drift 5s .4s ease-in-out infinite reverse; }
+    .node-python { left:8%; bottom:17%; animation:node-drift 4.7s .7s ease-in-out infinite; }
+    .node-sql { right:9%; bottom:18%; animation:node-drift 5.2s .2s ease-in-out infinite reverse; }
+    .node-spring { left:29%; top:8%; animation:node-drift 4.8s .9s ease-in-out infinite; }
+    .node-django { right:27%; bottom:6%; animation:node-drift 4.5s .5s ease-in-out infinite reverse; }
+    @keyframes enter { from { opacity:0; transform:translateY(25px); } to { opacity:1; transform:none; } }
+    @keyframes ripple { to { transform:scale(4); opacity:0; } }
+    @keyframes avatar-story { 0%,38% { transform:translateY(2px) scale(.94) rotate(-1deg); } 46% { transform:translateY(0) scale(.94); } 55%,88% { transform:translateY(-8px) scale(1.08); } 100% { transform:translateY(2px) scale(.94) rotate(-1deg); } }
+    @keyframes thinking-phase { 0%,38% { opacity:1; transform:rotate(0); } 46%,100% { opacity:0; transform:translate(18px,20px) rotate(15deg); } }
+    @keyframes thought-phase { 0%,34% { opacity:1; transform:translateY(0); } 43%,100% { opacity:0; transform:translateY(-12px); } }
+    @keyframes wave-phase { 0%,47% { opacity:0; transform:rotate(0); } 54% { opacity:1; transform:rotate(-16deg); } 62% { opacity:1; transform:rotate(18deg); } 70% { opacity:1; transform:rotate(-14deg); } 78% { opacity:1; transform:rotate(12deg); } 88% { opacity:1; transform:rotate(0); } 96%,100% { opacity:0; transform:rotate(0); } }
+    @keyframes story-eyes { 0%,16%,20%,39%,43%,100% { transform:scaleY(1) scaleX(1); } 18%,41% { transform:scaleY(.08) scaleX(1); } 50%,60% { transform:scaleY(1.28) scaleX(1.2); } }
+    @keyframes brow-surprise { 0%,43%,100% { transform:translateY(0); } 49%,64% { transform:translateY(-5px); } }
+    @keyframes thinking-image { 0%,42% { opacity:1; transform:scale(1); } 50%,94% { opacity:0; transform:scale(1.04); } 100% { opacity:1; transform:scale(1); } }
+    @keyframes waving-image { 0%,43% { opacity:0; transform:scale(1); } 52%,88% { opacity:1; transform:scale(1.09); } 96%,100% { opacity:0; transform:scale(1); } }
+    @keyframes greeting-pop { 0%,48%,92%,100% { opacity:0; transform:translateY(10px) scale(.9); } 58%,86% { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes hello-motion { from { transform:scale(1.1) rotate(-1deg); } to { transform:scale(1.12) rotate(1deg); } }
+    @keyframes emoji-wave { from { transform:rotate(-18deg); } to { transform:rotate(20deg); } }
+    @keyframes thought-bob { 0%,100% { transform:translateY(0) rotate(-4deg); } 50% { transform:translateY(-8px) rotate(4deg); } }
+    @keyframes memoji-hello { from { transform:scale(1.08) translateY(-4px) rotate(-.7deg); } to { transform:scale(1.1) translateY(-5px) rotate(.7deg); } }
+    @keyframes wave-frame-a { 0%,20%,40%,60%,80%,100% { opacity:1; } 10%,30%,50%,70%,90% { opacity:0; } }
+    @keyframes wave-frame-b { 0%,20%,40%,60%,80%,100% { opacity:0; } 10%,30%,50%,70%,90% { opacity:1; } }
+    @keyframes caption-pulse { 0%,100% { transform:scale(.85); opacity:.65; } 50% { transform:scale(1.1); opacity:1; } }
+    @keyframes gradient-flow { to { background-position:200% center; } }
+    @keyframes code-in { to { opacity:1; transform:none; } }
+    @keyframes node-drift { 0%,100% { translate:0 0; } 50% { translate:0 -9px; } }
+    @keyframes role-fall { 0% { opacity:0; filter:blur(13px); transform:translateY(-220px) scaleY(1.3) rotate(-5deg); } 15% { opacity:1; filter:blur(0); transform:translateY(13px) scaleY(.72) scaleX(1.14) rotate(1deg); text-shadow:0 22px 34px rgba(86,98,48,.48); } 21% { transform:translateY(-17px) scaleY(1.08) scaleX(.97); } 27% { transform:translateY(6px) scaleY(.93) scaleX(1.03); } 33%,47% { opacity:1; filter:none; transform:translateY(0) scale(1); text-shadow:none; } 48% { opacity:0; transform:translateY(0) scale(1); } 49%,50% { opacity:0; filter:blur(13px); transform:translateY(-220px) scaleY(1.3) rotate(5deg); } 65% { opacity:1; filter:blur(0); transform:translateY(13px) scaleY(.72) scaleX(1.14) rotate(-1deg); text-shadow:0 22px 34px rgba(86,98,48,.48); } 71% { transform:translateY(-17px) scaleY(1.08) scaleX(.97); } 77% { transform:translateY(6px) scaleY(.93) scaleX(1.03); } 83%,100% { opacity:1; filter:none; transform:translateY(0) scale(1); text-shadow:none; } }
+    @keyframes role-impact { 0%,13%,28%,63%,78%,100% { opacity:0; transform:translateX(-50%) scaleX(0); box-shadow:none; } 16%,66% { opacity:1; transform:translateX(-50%) scaleX(1.45); box-shadow:0 0 30px rgba(127,137,77,.9); } 22%,72% { opacity:.35; transform:translateX(-50%) scaleX(.7); box-shadow:0 0 12px rgba(127,137,77,.35); } }
+    @keyframes star-trail { 0% { opacity:.95; transform:translate(-50%,-50%) scale(.35) rotate(0deg); } 45% { opacity:.75; transform:translate(calc(-50% + var(--star-x)),calc(-50% + var(--star-y))) scale(1) rotate(90deg); } 100% { opacity:0; transform:translate(calc(-50% + var(--star-x)),calc(-50% + var(--star-y) + 12px)) scale(.15) rotate(190deg); } }
+    /* Système d'animation cohérent */
+    .motion-ready .motion-item { opacity:0; transform:translateY(34px) scale(.98); transition:opacity .7s ease,transform .8s cubic-bezier(.16,1,.3,1); transition-delay:var(--motion-delay,0ms); }
+    .motion-ready .motion-item.motion-visible { opacity:1; transform:translateY(0) scale(1); }
+    .motion-ready .section-heading { opacity:0; transform:translateX(-28px); transition:opacity .7s ease,transform .8s cubic-bezier(.16,1,.3,1); }
+    .motion-ready .section-heading.motion-visible { opacity:1; transform:none; }
+    .stack-lab .tech-node { animation:none; opacity:0; transform:translateY(18px) scale(.82); transition:opacity .5s ease,transform .65s cubic-bezier(.16,1,.3,1),background-color .25s ease,color .25s ease; transition-delay:var(--node-delay,0ms); }
+    .stack-lab.nodes-visible .tech-node { opacity:1; transform:translateY(0) scale(1); }
+    .stack-lab.nodes-visible .tech-node:hover { transform:scale(1.12) rotate(2deg); }
+    .stack-core { transition:transform .7s cubic-bezier(.16,1,.3,1),box-shadow .4s ease; }
+    .stack-lab.nodes-visible .stack-core { animation:core-pulse 1.1s .2s ease both; }
+    .project-card { isolation:isolate; }
+    .project-card::after { content:''; position:absolute; inset:0; z-index:2; pointer-events:none; background:linear-gradient(115deg,transparent 35%,rgba(193,196,138,.14) 50%,transparent 65%); transform:translateX(-110%); transition:transform .7s ease; }
+    .project-card:hover::after { transform:translateX(110%); }
+    .project-card > div:first-child { position:relative; overflow:hidden; }
+    .project-card > div:first-child::after { content:'↗'; position:absolute; right:18px; top:18px; display:grid; width:38px; height:38px; place-items:center; border-radius:50%; background:rgba(255,255,255,.88); color:#444f28; font-size:1.1rem; box-shadow:0 8px 20px rgba(54,62,32,.14); transform:translateY(-7px) rotate(-12deg); opacity:0; transition:opacity .3s ease,transform .35s ease; }
+    .project-card:hover > div:first-child::after { opacity:1; transform:translateY(0) rotate(0); }
+    #services .grid > div { position:relative; overflow:hidden; transition:background-color .3s ease,transform .35s ease; }
+    #services .grid > div::before { content:''; position:absolute; left:0; top:0; width:3px; height:0; background:#c1c48a; transition:height .4s ease; }
+    #services .grid > div:hover { background:#3f4925; transform:translateY(-4px); }
+    #services .grid > div:hover::before { height:100%; }
+    @keyframes core-pulse { 0% { transform:translate(-50%,-50%) scale(.75); box-shadow:0 0 0 0 rgba(127,137,77,.35); } 60% { transform:translate(-50%,-50%) scale(1.05); box-shadow:0 0 0 22px rgba(127,137,77,0); } 100% { transform:translate(-50%,-50%) scale(1); } }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior:auto; }
+      *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+      .reveal { opacity:1; transform:none; }
+      .motion-ready .motion-item,.motion-ready .section-heading,.stack-lab .tech-node { opacity:1; transform:none; }
+    }
+    @media (min-width:640px) { .core-stack { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+    @media (max-width:640px) { .role-drop { font-size:.72rem; letter-spacing:.15em; } .core-tech { min-height:96px; padding:1rem; } .core-tech-mark { width:44px; height:44px; border-radius:14px; } }
+  </style>
+</head>
+<body class="min-h-screen bg-white font-sans text-olive-900 antialiased">
+  <div id="scroll-progress" class="fixed left-0 top-0 z-[70] h-1 w-full bg-olive-600" aria-hidden="true"></div>
+  <header class="sticky top-0 z-50 border-b border-olive-100 bg-white/90 backdrop-blur-xl">
+    <div class="mx-auto flex h-20 max-w-6xl items-center justify-between px-6">
+      <a href="#accueil" class="flex items-center gap-3" aria-label="Retour à l'accueil">
+        <span class="grid h-11 w-11 place-items-center rounded-2xl bg-olive-700 font-bold text-white">MZ</span>
+        <span class="font-bold tracking-tight">Manar Zouheir</span>
+      </a>
+      <button id="menu-button" class="rounded-xl border border-olive-200 p-2 text-olive-800 md:hidden" aria-label="Ouvrir le menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav id="menu" class="hidden items-center gap-7 text-sm font-medium text-olive-700 md:flex">
+        <a class="nav-link" href="#apropos">À propos</a>
+        <a class="nav-link" href="#experiences">Expériences</a>
+        <a class="nav-link" href="#competences">Compétences</a>
+        <a class="nav-link" href="#projets">Projets</a>
+        <a class="nav-link" href="#services">Mes atouts</a>
+        <a href="#contact" class="button rounded-full bg-olive-700 px-5 py-2.5 font-semibold text-white shadow-lg shadow-olive-700/15 hover:bg-olive-800">Me contacter</a>
+      </nav>
+    </div>
+    <nav id="mobile-menu" class="hidden border-t border-olive-100 bg-white px-6 py-5 md:hidden">
+      <div class="flex flex-col gap-4 text-sm font-medium text-olive-700">
+        <a href="#apropos">À propos</a><a href="#experiences">Expériences</a><a href="#competences">Compétences</a><a href="#projets">Projets</a><a href="#services">Mes atouts</a><a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="accueil" class="relative overflow-hidden bg-gradient-to-br from-olive-50 via-white to-olive-100/60">
+      <div class="hero-grid pointer-events-none absolute inset-0"></div>
+      <div class="absolute -right-24 top-20 h-80 w-80 rounded-full bg-olive-200/50 blur-3xl"></div>
+      <div class="mx-auto grid min-h-[720px] max-w-6xl items-center gap-14 px-6 py-24 lg:grid-cols-[1.2fr_.8fr]">
+        <div class="hero-enter relative">
+          <p class="role-drop"><span>Développeuse Full Stack</span></p>
+          <h1 class="mt-5 max-w-3xl text-5xl font-black leading-[1.05] tracking-[-.04em] text-olive-900 md:text-7xl">Du besoin métier au <span class="gradient-word">produit web.</span></h1>
+          <p class="mt-7 max-w-2xl text-lg leading-8 text-olive-700">Je suis Manar Zouheir, étudiante en 5<sup>e</sup> année à l’EMSI. Chez SBM et Intelcia, j’ai appris à comprendre un besoin, structurer une solution et la concrétiser à travers des interfaces, une logique serveur et des données fiables.</p>
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href="#projets" class="button rounded-full bg-olive-700 px-7 py-3.5 font-semibold text-white shadow-xl shadow-olive-700/20 hover:bg-olive-800">Découvrir mes projets <span aria-hidden="true">→</span></a>
+            <a href="#experiences" class="button rounded-full border border-olive-300 bg-white px-7 py-3.5 font-semibold text-olive-800 hover:border-olive-500">Voir mon parcours</a>
+          </div>
+        </div>
+        <div class="hero-delay relative px-3 py-5">
+          <div id="hero-card" class="hero-visual rounded-[2.25rem] border border-white bg-white/85 p-7 shadow-2xl shadow-olive-300/30 backdrop-blur md:p-8">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold uppercase tracking-[.2em] text-olive-600">Mon approche</span>
+              <span class="rounded-full bg-olive-100 px-3 py-1 text-xs font-semibold text-olive-700">Frontend ↔ Backend</span>
+            </div>
+            <h2 class="mt-8 text-3xl font-bold tracking-tight">Comprendre. Concevoir. Construire.</h2>
+            <p class="mt-4 leading-7 text-olive-700">Je relie enjeux métier et choix techniques pour créer des applications utiles, maintenables et agréables à utiliser.</p>
+            <div class="code-window mt-7 overflow-hidden rounded-2xl p-5 font-mono text-xs leading-6 text-olive-200">
+              <div class="mb-3 flex gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-red-300"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-300"></span><span class="h-2.5 w-2.5 rounded-full bg-olive-300"></span><span class="ml-auto text-[10px] text-olive-400">manar.dev</span></div>
+              <p class="code-line"><span class="text-olive-400">const</span> developer = {</p>
+              <p class="code-line pl-4">name: <span class="text-white">'Manar'</span>,</p>
+              <p class="code-line pl-4">role: <span class="text-white">'Web Engineering'</span>,</p>
+              <p class="code-line pl-4">passion: <span class="text-white">'Créer & innover'</span></p>
+              <p class="code-line">}; <span class="ml-1 inline-block h-4 w-1 animate-pulse bg-olive-300 align-middle"></span></p>
+            </div>
+            <div class="mt-8 grid grid-cols-3 gap-3 border-t border-olive-100 pt-7 text-center">
+              <div><p class="text-2xl font-black text-olive-700">2</p><p class="mt-1 text-xs text-olive-600">Expériences</p></div>
+              <div><p class="text-2xl font-black text-olive-700">Full</p><p class="mt-1 text-xs text-olive-600">Stack</p></div>
+              <div><p class="text-2xl font-black text-olive-700">Agile</p><p class="mt-1 text-xs text-olive-600">& autonome</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="apropos" class="px-6 py-24">
+      <div class="reveal mx-auto grid max-w-6xl gap-14 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
+        <div id="animated-avatar" class="avatar-card relative mx-auto grid aspect-square w-full max-w-md place-items-center overflow-hidden rounded-[2.75rem] text-white">
+          <div class="avatar-scene" role="img" aria-label="Avatar féminin avec des lunettes qui s’approche pour saluer">
+            <img class="memoji-avatar wave-frame-a" src="assets/manar-memoji-waving.png" alt="" width="1254" height="1254">
+            <img class="memoji-avatar wave-frame-b" src="assets/manar-memoji-wave-left.png" alt="" width="1254" height="1254">
+            <span class="avatar-greeting absolute right-5 top-5 rounded-full border border-white/60 bg-white/90 px-4 py-2 text-sm font-bold text-olive-800 shadow-lg"><span class="h-2 w-2 rounded-full bg-olive-500"></span>Salut !</span>
+          </div>
+          <svg class="hidden" viewBox="0 0 280 280" aria-hidden="true">
+            <defs>
+              <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd7bd"/><stop offset="1" stop-color="#e9a47e"/></linearGradient>
+              <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4b3730"/><stop offset=".55" stop-color="#241a18"/><stop offset="1" stop-color="#120f0e"/></linearGradient>
+              <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eef1df"/><stop offset="1" stop-color="#a1a869"/></linearGradient>
+              <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+            </defs>
+            <g class="thought-bubbles" fill="white" opacity=".9"><circle cx="52" cy="75" r="7"/><circle cx="38" cy="55" r="11"/><circle cx="28" cy="30" r="16"/></g>
+            <!-- cheveux carré brun foncé -->
+            <ellipse cx="150" cy="257" rx="87" ry="15" fill="#253014" opacity=".28" filter="url(#soft)"/>
+            <path d="M72 113c0-61 34-91 78-91s77 30 77 91v88c-19 17-136 17-155 0z" fill="url(#hair)"/>
+            <path d="M83 112c0-49 27-75 67-75s66 26 66 75v54H83z" fill="#3b2b25"/>
+            <!-- cou et buste -->
+            <path d="M132 176h36v38h-36z" fill="url(#skin)"/>
+            <path d="M73 272c4-49 30-72 77-72s73 23 77 72z" fill="url(#shirt)"/>
+            <path d="M128 202l22 28 22-28 18 7-13 63h-54l-13-63z" fill="#c1c48a" opacity=".75"/>
+            <!-- visage -->
+            <path d="M91 104c0-45 24-67 59-67s59 22 59 67v35c0 43-25 67-59 67s-59-24-59-67z" fill="url(#skin)"/>
+            <!-- frange et carré -->
+            <path d="M87 111c1-55 27-79 65-79 39 0 65 25 65 78-17-5-31-18-40-38-19 20-47 32-90 39z" fill="#30231f"/>
+            <path d="M79 106c3 1 14 4 22 0v82c-7 11-17 16-29 16v-73c0-12 2-20 7-25zM221 106c-3 1-14 4-22 0v82c7 11 17 16 29 16v-73c0-12-2-20-7-25z" fill="#30231f"/>
+            <!-- oreilles -->
+            <ellipse cx="91" cy="132" rx="9" ry="14" fill="#efb18e"/><ellipse cx="209" cy="132" rx="9" ry="14" fill="#e8a17d"/>
+            <!-- lunettes -->
+            <g fill="none" stroke="#25231f" stroke-width="4">
+              <rect x="101" y="111" width="42" height="30" rx="12"/><rect x="157" y="111" width="42" height="30" rx="12"/><path d="M143 121h14M101 119l-11-4M199 119l11-4"/>
+            </g>
+            <g class="avatar-brows" fill="none" stroke="#392821" stroke-width="3.5" stroke-linecap="round"><path d="M111 105c8-5 17-5 24-1"/><path d="M165 104c8-4 17-4 24 1"/></g>
+            <!-- yeux animés -->
+            <g class="avatar-eye" fill="#332721"><ellipse cx="123" cy="126" rx="4" ry="5"/><ellipse cx="177" cy="126" rx="4" ry="5"/></g>
+            <!-- nez et sourire -->
+            <path d="M150 130l-4 16h9" fill="none" stroke="#d68f70" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M132 162c10 12 27 12 37 0" fill="none" stroke="#9b4f4b" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="113" cy="150" r="7" fill="#e9a18f" opacity=".45"/><circle cx="187" cy="150" r="7" fill="#e9a18f" opacity=".45"/>
+            <!-- main sur le menton pendant la réflexion -->
+            <g class="thinking-hand">
+              <path d="M198 272c-5-19-8-36-4-54 3-12 9-22 17-31 5-5 12 1 8 7l-9 14 18-22c4-5 12 1 8 6l-16 23 16-14c5-4 11 3 6 8l-21 20c-5 6-7 18-5 43z" fill="url(#skin)"/>
+              <ellipse cx="205" cy="185" rx="10" ry="17" transform="rotate(28 205 185)" fill="url(#skin)"/>
+            </g>
+            <!-- bras et main qui salue après avoir vu le visiteur -->
+            <g class="wave-hand">
+              <path d="M207 231c12-17 18-34 20-49l5-42c1-6 9-6 10 0l1 27 5-37c1-7 10-6 10 1l-3 38 10-29c2-6 10-3 9 3l-9 36 9-15c3-5 10-1 8 4l-14 34c-7 18-13 31-22 43z" fill="url(#skin)"/>
+              <path d="M205 229l42 15-11 28h-47z" fill="#c1c48a"/>
+            </g>
+          </svg>
+          <div class="avatar-caption"><div><strong>Manar Zouheir</strong><span>Créative · Curieuse · Rigoureuse</span></div><i aria-hidden="true"></i></div>
+        </div>
+        <div>
+          <p class="text-sm font-bold uppercase tracking-[.25em] text-olive-600">À propos de moi</p>
+          <h2 class="mt-4 text-4xl font-black tracking-tight md:text-5xl">Créer du beau, mais surtout de l’utile.</h2>
+          <p class="mt-7 text-lg leading-8 text-olive-700">À 22 ans, je développe des solutions web complètes qui combinent identité visuelle, simplicité et efficacité. J’aime transformer une idée en un produit cohérent, de l’interface utilisateur jusqu’au backend.</p>
+          <p class="mt-4 leading-7 text-olive-600">Mon objectif est simple : livrer un site professionnel qui vous ressemble, inspire confiance et reste agréable à utiliser sur mobile comme sur ordinateur.</p>
+          <div class="mt-8 flex flex-wrap gap-3"><span class="rounded-full bg-olive-50 px-4 py-2 text-sm font-medium">Basée au Maroc</span><span class="rounded-full bg-olive-50 px-4 py-2 text-sm font-medium">Français</span><span class="rounded-full bg-olive-50 px-4 py-2 text-sm font-medium">Travail à distance</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experiences" class="border-y border-olive-100 bg-white px-6 py-24">
+      <div class="reveal mx-auto max-w-6xl">
+        <div class="max-w-3xl">
+          <p class="text-sm font-bold uppercase tracking-[.25em] text-olive-600">Parcours professionnel</p>
+          <h2 class="mt-4 text-4xl font-black tracking-tight md:text-5xl">Des expériences qui transforment la théorie en <span class="gradient-word">solutions concrètes.</span></h2>
+          <p class="mt-5 max-w-2xl text-lg leading-8 text-olive-600">Deux environnements professionnels qui m’ont permis de comprendre les besoins métier et de développer des solutions adaptées.</p>
+        </div>
+        <div class="timeline mt-14 space-y-8">
+          <article class="timeline-item motion-item">
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <div class="timeline-card rounded-[2rem] border border-olive-100 bg-olive-50/60 p-7 md:p-9">
+              <div class="relative z-10 flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <span class="inline-flex rounded-full bg-olive-700 px-3 py-1 text-xs font-bold uppercase tracking-[.18em] text-white">Stage · 2026</span>
+                  <h3 class="mt-5 text-2xl font-black">Développement d’application web</h3>
+                  <p class="mt-1 font-semibold text-olive-600">Intelcia</p>
+                </div>
+                <div class="flex flex-wrap gap-2 md:max-w-xs md:justify-end"><span class="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-olive-700 shadow-sm">Django</span><span class="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-olive-700 shadow-sm">Next.js</span><span class="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-olive-700 shadow-sm">Télécom</span></div>
+              </div>
+              <p class="relative z-10 mt-6 max-w-3xl leading-7 text-olive-700">Développement et maintenance d’une plateforme de pilotage des activités télécom. Contribution aux interfaces avec Next.js et aux fonctionnalités backend avec Django, dans un contexte applicatif orienté suivi opérationnel.</p>
+            </div>
+          </article>
+          <article class="timeline-item motion-item">
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <div class="timeline-card rounded-[2rem] border border-olive-100 bg-olive-50/60 p-7 md:p-9">
+              <div class="relative z-10 flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <span class="inline-flex rounded-full bg-olive-200 px-3 py-1 text-xs font-bold uppercase tracking-[.18em] text-olive-800">Stage · 2025</span>
+                  <h3 class="mt-5 text-2xl font-black">Découverte SAP & solution métier</h3>
+                  <p class="mt-1 font-semibold text-olive-600">SBM</p>
+                </div>
+                <div class="flex flex-wrap gap-2 md:max-w-xs md:justify-end"><span class="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-olive-700 shadow-sm">SAP</span><span class="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-olive-700 shadow-sm">Contrats</span><span class="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-olive-700 shadow-sm">DSI</span></div>
+              </div>
+              <p class="relative z-10 mt-6 max-w-3xl leading-7 text-olive-700">Familiarisation avec l’environnement SAP et analyse des besoins de la DSI. Conception d’une solution destinée à faciliter la gestion et le suivi des contrats informatiques.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="competences" class="bg-olive-50 px-6 py-24">
+      <div class="reveal mx-auto max-w-6xl">
+        <div class="max-w-3xl"><p class="text-sm font-bold uppercase tracking-[.25em] text-olive-600">Mon écosystème technique</p><h2 class="mt-4 text-4xl font-black tracking-tight md:text-5xl">Les outils au service de <span class="gradient-word">vos idées.</span></h2><p class="mt-5 max-w-2xl text-lg leading-8 text-olive-600">Du navigateur à la base de données, je combine plusieurs langages pour construire des expériences complètes, cohérentes et prêtes à évoluer.</p></div>
+        <div class="core-stack mt-12" aria-label="Technologies principales">
+          <div class="core-tech"><span class="core-tech-mark">JS</span><div class="core-tech-copy"><strong>JavaScript</strong><span>Frontend</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">N</span><div class="core-tech-copy"><strong>Next.js</strong><span>Interface web</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">Py</span><div class="core-tech-copy"><strong>Python</strong><span>Backend</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">Dj</span><div class="core-tech-copy"><strong>Django</strong><span>Applications métier</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">J</span><div class="core-tech-copy"><strong>Java</strong><span>Backend</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">Sp</span><div class="core-tech-copy"><strong>Spring Boot</strong><span>Backend Java</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">C#</span><div class="core-tech-copy"><strong>C#</strong><span>Écosystème .NET</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">.NET</span><div class="core-tech-copy"><strong>ASP.NET Core</strong><span>Web API & MVC</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">SQL</span><div class="core-tech-copy"><strong>SQL</strong><span>Données</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">Git</span><div class="core-tech-copy"><strong>GitHub</strong><span>Collaboration</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">Dk</span><div class="core-tech-copy"><strong>Docker</strong><span>Conteneurisation</span></div></div>
+          <div class="core-tech"><span class="core-tech-mark">Jr</span><div class="core-tech-copy"><strong>Jira</strong><span>Gestion de projet</span></div></div>
+        </div>
+        <div class="practice-panel mt-6" aria-label="Pratiques complémentaires"><strong>Pratiques complémentaires</strong><span>Responsive Design</span><span>Accessibilité</span><span>API REST</span><span>Authentification</span><span>Permissions par rôle</span><span>Tests unitaires</span><span>Sécurité web</span><span>CI/CD</span><span>Gestion de projet Agile / Scrum</span><span>Clean Code</span></div>
+        <div class="hidden" hidden aria-hidden="true">
+          <article class="card rounded-3xl border border-olive-100 bg-white p-7">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl bg-olive-100 text-xl font-black text-olive-700">01</span>
+            <h3 class="mt-6 text-xl font-bold">Frontend</h3>
+            <p class="mt-3 leading-7 text-olive-600">Interfaces modernes, accessibles et adaptées à tous les écrans.</p>
+            <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">HTML5</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">CSS3</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">JavaScript</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">React</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Tailwind CSS</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Bootstrap</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Responsive Design</span></div>
+          </article>
+          <article class="card rounded-3xl border border-olive-100 bg-white p-7">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl bg-olive-100 text-xl font-black text-olive-700">02</span>
+            <h3 class="mt-6 text-xl font-bold">Backend Java</h3>
+            <p class="mt-3 leading-7 text-olive-600">Applications robustes, sécurisées et structurées avec l’écosystème Java.</p>
+            <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Java</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Spring Boot</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Spring MVC</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Spring Security</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">JPA / Hibernate</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Maven</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">API REST</span></div>
+          </article>
+          <article class="card rounded-3xl border border-olive-100 bg-white p-7">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl bg-olive-100 text-xl font-black text-olive-700">03</span>
+            <h3 class="mt-6 text-xl font-bold">Backend Python</h3>
+            <p class="mt-3 leading-7 text-olive-600">Développement rapide d’applications métier et d’API performantes.</p>
+            <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Python</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Django</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Django REST</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">ORM</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Authentification</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">API REST</span></div>
+          </article>
+          <article class="card rounded-3xl border border-olive-100 bg-white p-7">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl bg-olive-100 text-xl font-black text-olive-700">04</span>
+            <h3 class="mt-6 text-xl font-bold">Backend Microsoft</h3>
+            <p class="mt-3 leading-7 text-olive-600">Applications web et API structurées avec la plateforme .NET.</p>
+            <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">C#</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">ASP.NET Core</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">ASP.NET MVC</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Web API</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Entity Framework Core</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">LINQ</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Injection de dépendances</span></div>
+          </article>
+          <article class="card rounded-3xl border border-olive-100 bg-white p-7">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl bg-olive-100 text-xl font-black text-olive-700">05</span>
+            <h3 class="mt-6 text-xl font-bold">Bases de données</h3>
+            <p class="mt-3 leading-7 text-olive-600">Modélisation, requêtes et gestion fiable des données applicatives.</p>
+            <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">SQL</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">MySQL</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">PostgreSQL</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">SQLite</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Modélisation</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">CRUD</span></div>
+          </article>
+          <article class="card rounded-3xl border border-olive-100 bg-white p-7">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl bg-olive-100 text-xl font-black text-olive-700">06</span>
+            <h3 class="mt-6 text-xl font-bold">Outils & DevOps</h3>
+            <p class="mt-3 leading-7 text-olive-600">Un workflow propre, collaboratif et adapté à la mise en production.</p>
+            <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Git</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">GitHub</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Docker</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Jira</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Postman</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Linux</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">CI/CD</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Déploiement</span></div>
+          </article>
+          <article class="card rounded-3xl border border-olive-100 bg-white p-7">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl bg-olive-100 text-xl font-black text-olive-700">07</span>
+            <h3 class="mt-6 text-xl font-bold">Qualité & méthodes</h3>
+            <p class="mt-3 leading-7 text-olive-600">Des applications maintenables construites selon de bonnes pratiques.</p>
+            <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">POO</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Architecture MVC</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Tests unitaires</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">JUnit</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Sécurité</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Agile / Scrum</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">SEO</span></div>
+          </article>
+          <article class="card rounded-3xl border border-olive-100 bg-white p-7">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl bg-olive-100 text-xl font-black text-olive-700">08</span>
+            <h3 class="mt-6 text-xl font-bold">Architecture & API</h3>
+            <p class="mt-3 leading-7 text-olive-600">Conception de fonctionnalités sécurisées et faciles à maintenir.</p>
+            <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">API REST</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">JSON</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">JWT</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">CRUD</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">MVC / MVT</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Permissions par rôle</span><span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm">Clean Code</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="projets" class="px-6 py-24">
+      <div class="reveal mx-auto max-w-6xl">
+        <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end"><div><p class="text-sm font-bold uppercase tracking-[.25em] text-olive-600">Sélection</p><h2 class="mt-4 text-4xl font-black tracking-tight md:text-5xl">Projets récents</h2></div><p class="max-w-md text-olive-600">Quelques types d’expériences que je peux concevoir et développer.</p></div>
+        <div class="mt-12 grid gap-7 lg:grid-cols-3">
+          <article tabindex="0" role="button" aria-label="Voir le projet AKdental" data-project="dental" class="project-card clickable card group overflow-hidden rounded-[2rem] border border-olive-100 bg-white">
+            <div class="relative h-52 overflow-hidden bg-olive-800">
+              <img src="assets/screenshots/login.png" alt="Page de connexion de l’application AKdental" class="h-full w-full object-cover object-center transition duration-700 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-olive-900/80 via-olive-900/5 to-transparent"></div>
+              <span class="absolute left-5 top-5 rounded-full border border-white/30 bg-white/90 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-olive-800 shadow-lg backdrop-blur">Projet réel</span>
+              <div class="absolute inset-x-5 bottom-4 flex items-end justify-between gap-3 text-white"><div><span class="text-xs font-semibold uppercase tracking-[.2em] text-olive-200">Application métier</span><strong class="mt-1 block text-2xl">AKdental</strong></div><span class="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">4 rôles</span></div>
+            </div>
+            <div class="p-7"><div class="flex flex-wrap gap-2 text-xs font-semibold text-olive-600"><span>Django</span><span>•</span><span>JavaScript</span><span>•</span><span>SQL</span></div><h3 class="mt-4 text-2xl font-bold">AKdental — Gestion des rendez-vous</h3><p class="mt-3 leading-7 text-olive-600">Application multi-rôles pour administrer les utilisateurs, les rendez-vous, les patients et l’organisation d’un centre dentaire.</p><span class="mt-5 inline-flex font-semibold text-olive-700">Voir l’étude de cas →</span></div>
+          </article>
+          <article tabindex="0" role="button" aria-label="Voir le projet AURA Perfume" data-project="aura" class="project-card clickable card group overflow-hidden rounded-[2rem] border border-olive-100 bg-white">
+            <div class="relative h-52 overflow-hidden bg-stone-950">
+              <img src="assets/screenshots/login_admin.png" alt="Page de connexion administrateur d’AURA Perfume" class="h-full w-full object-cover object-center transition duration-700 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/10 to-transparent"></div>
+              <span class="absolute left-5 top-5 rounded-full border border-white/30 bg-white/90 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-olive-900 shadow-lg backdrop-blur">Projet .NET</span>
+              <div class="absolute inset-x-5 bottom-4 text-white"><span class="text-xs font-semibold uppercase tracking-[.2em] text-olive-200">E-commerce</span><strong class="mt-1 block font-serif text-2xl tracking-wide">AURA Perfume</strong></div>
+            </div>
+            <div class="p-7"><div class="flex flex-wrap gap-2 text-xs font-semibold text-olive-600"><span>C#</span><span>•</span><span>ASP.NET Core</span><span>•</span><span>SQL Server</span></div><h3 class="mt-4 text-2xl font-bold">AURA Perfume</h3><p class="mt-3 leading-7 text-olive-600">Application web de vente de parfums développée avec l’écosystème Microsoft .NET.</p><span class="mt-5 inline-flex font-semibold text-olive-700">Voir la stack technique →</span></div>
+          </article>
+          <article tabindex="0" role="button" aria-label="Voir le projet QuizNight" data-project="quiznight" class="project-card clickable card group overflow-hidden rounded-[2rem] border border-olive-100 bg-white">
+            <div class="relative grid h-52 place-items-center overflow-hidden bg-[#17376b]">
+              <img src="assets/screenshots/Quiz_night.png" alt="Écran de connexion de l’application mobile QuizNight" class="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-lg">
+              <img src="assets/screenshots/Quiz_night.png" alt="" class="relative h-[185px] w-auto rounded-xl border border-white/30 object-contain shadow-2xl transition duration-700 group-hover:-rotate-2 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#10274f]/90 via-transparent to-transparent"></div>
+              <span class="absolute left-5 top-5 rounded-full border border-white/30 bg-white/90 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#17376b] shadow-lg backdrop-blur">Projet Android</span>
+              <div class="absolute inset-x-5 bottom-4 text-white"><span class="text-xs font-semibold uppercase tracking-[.2em] text-blue-100">Application mobile</span><strong class="mt-1 block text-xl">QuizNight</strong></div>
+            </div>
+            <div class="p-7"><div class="flex flex-wrap gap-2 text-xs font-semibold text-olive-600"><span>Java</span><span>•</span><span>Android</span><span>•</span><span>Android Studio</span></div><h3 class="mt-4 text-2xl font-bold">QuizNight</h3><p class="mt-3 leading-7 text-olive-600">Application Android développée en Java pour proposer une expérience de quiz simple et interactive.</p><span class="mt-5 inline-flex font-semibold text-olive-700">Voir les détails →</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="bg-olive-900 px-6 py-24 text-white">
+      <div class="reveal mx-auto max-w-6xl">
+        <p class="text-sm font-bold uppercase tracking-[.25em] text-olive-300">Ce que j’apporte</p><h2 class="mt-4 max-w-3xl text-4xl font-black tracking-tight md:text-5xl">Une développeuse impliquée, capable de comprendre le métier autant que le code.</h2>
+        <div class="mt-12 grid gap-px overflow-hidden rounded-[2rem] bg-white/10 md:grid-cols-3">
+          <div class="bg-olive-900 p-8"><p class="text-olive-300">01</p><h3 class="mt-5 text-xl font-bold">Vision de bout en bout</h3><p class="mt-3 leading-7 text-olive-200">Je relie interfaces, logique backend et données pour comprendre une fonctionnalité dans son ensemble.</p></div>
+          <div class="bg-olive-900 p-8"><p class="text-olive-300">02</p><h3 class="mt-5 text-xl font-bold">Compréhension métier</h3><p class="mt-3 leading-7 text-olive-200">Mes stages m’ont appris à analyser un besoin opérationnel avant de proposer une solution technique adaptée.</p></div>
+          <div class="bg-olive-900 p-8"><p class="text-olive-300">03</p><h3 class="mt-5 text-xl font-bold">Progression continue</h3><p class="mt-3 leading-7 text-olive-200">Curieuse et rigoureuse, je documente mon travail, recherche les bonnes pratiques et monte rapidement en compétence.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="bg-olive-50 px-6 py-24">
+      <div class="reveal mx-auto max-w-5xl rounded-[2.5rem] bg-white p-8 shadow-2xl shadow-olive-200/50 md:p-14">
+        <div class="grid gap-10 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+          <div><p class="text-sm font-bold uppercase tracking-[.25em] text-olive-600">Échangeons</p><h2 class="mt-4 text-4xl font-black tracking-tight md:text-5xl">Une opportunité dans votre équipe ?</h2><p class="mt-6 max-w-xl leading-7 text-olive-600">Je serais ravie d’échanger sur vos besoins, votre environnement technique et la manière dont je pourrais contribuer à vos projets.</p></div>
+          <div class="rounded-3xl bg-olive-700 p-8 text-white"><p class="text-sm font-semibold uppercase tracking-[.2em] text-olive-200">Contacter Manar</p><button id="copy-email" type="button" data-email="zouheirmanar2@gmail.com" class="copy-email mt-5 flex w-full items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-4 text-left" aria-label="Copier l’adresse email"><span class="copy-icon grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/15 text-xl" aria-hidden="true">⧉</span><span class="min-w-0"><span class="block text-xs text-olive-200">Cliquez pour copier</span><strong class="mt-1 block truncate text-base sm:text-lg">zouheirmanar2@gmail.com</strong></span><span id="copy-label" class="ml-auto text-xs font-bold uppercase tracking-wider text-olive-200">Copier</span></button><div class="mt-5 flex flex-wrap gap-3"><a href="mailto:zouheirmanar2@gmail.com?subject=Opportunité%20professionnelle" class="button inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-olive-800">Proposer un échange →</a><a href="https://github.com/manarzouheir" target="_blank" rel="noopener noreferrer" class="button inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-5 py-3 text-sm font-semibold text-white hover:bg-white/20" aria-label="Voir le profil GitHub de Manar Zouheir"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .7a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2.23c-3.23.7-3.91-1.37-3.91-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.38.97.1-.75.41-1.27.74-1.56-2.58-.29-5.29-1.29-5.29-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.05 0 0 .97-.31 3.16 1.18a10.9 10.9 0 0 1 5.76 0c2.19-1.49 3.16-1.18 3.16-1.18.63 1.58.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.4-2.72 5.38-5.3 5.67.42.36.79 1.07.79 2.16v3.21c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg>GitHub</a></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-olive-100 bg-white px-6 py-8 text-sm text-olive-600">
+    <div class="mx-auto flex max-w-6xl flex-col gap-3 text-center md:flex-row md:items-center md:justify-between md:text-left"><p>© <span id="year">2026</span> Manar Zouheir. Tous droits réservés.</p><div class="flex items-center justify-center gap-4"><a href="https://github.com/manarzouheir" target="_blank" rel="noopener noreferrer" class="font-semibold text-olive-700 hover:text-olive-900">GitHub ↗</a><span aria-hidden="true">•</span><p>Conçu avec soin au Maroc.</p></div></div>
+  </footer>
+
+  <div id="project-modal" class="modal-hidden fixed inset-0 z-[80] grid place-items-center bg-olive-950/70 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-panel relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-white p-8 shadow-2xl md:p-10">
+      <button id="modal-close" class="button absolute right-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-olive-100 text-xl text-olive-800" aria-label="Fermer la fenêtre">×</button>
+      <span id="modal-label" class="text-sm font-bold uppercase tracking-[.22em] text-olive-600"></span>
+      <h2 id="modal-title" class="mt-4 pr-10 text-3xl font-black tracking-tight"></h2>
+      <p id="modal-description" class="mt-5 leading-7 text-olive-600"></p>
+      <div id="modal-tags" class="mt-6 flex flex-wrap gap-2"></div>
+      <div id="modal-features" class="mt-8 hidden"><h3 class="text-lg font-bold">Fonctionnalités principales</h3><ul class="mt-4 grid gap-3 text-sm text-olive-700 sm:grid-cols-2"></ul></div>
+      <div id="modal-gallery" class="mt-8 hidden"><div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><h3 class="text-lg font-bold">Aperçu du projet</h3><p class="mt-1 text-xs text-olive-500">Explorez les interfaces selon le type d’utilisateur.</p></div><span class="text-xs text-olive-500">Cliquez sur une capture pour l’agrandir</span></div><div id="gallery-filters" class="mt-5 flex flex-wrap gap-2" aria-label="Filtrer les captures par rôle"></div><div class="gallery-grid mt-5 grid gap-5 sm:grid-cols-2"></div></div>
+      <div class="mt-8 flex flex-wrap gap-3"><a id="modal-github" href="#" target="_blank" rel="noopener noreferrer" class="button clickable hidden items-center gap-2 rounded-full bg-olive-900 px-6 py-3 font-semibold text-white" aria-label="Voir le code du projet sur GitHub"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .7a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2.23c-3.23.7-3.91-1.37-3.91-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.38.97.1-.75.41-1.27.74-1.56-2.58-.29-5.29-1.29-5.29-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.05 0 0 .97-.31 3.16 1.18a10.9 10.9 0 0 1 5.76 0c2.19-1.49 3.16-1.18 3.16-1.18.63 1.58.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.4-2.72 5.38-5.3 5.67.42.36.79 1.07.79 2.16v3.21c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg>Voir le code</a><a id="modal-contact" href="#contact" class="button clickable inline-flex rounded-full border border-olive-300 bg-white px-6 py-3 font-semibold text-olive-700">Me contacter →</a></div>
+    </div>
+  </div>
+
+  <div id="copy-toast" class="toast-hidden fixed bottom-6 left-1/2 z-[120] flex -translate-x-1/2 items-center gap-3 rounded-full bg-olive-900 px-5 py-3 text-sm font-semibold text-white shadow-2xl" role="status" aria-live="polite"><span class="grid h-6 w-6 place-items-center rounded-full bg-olive-500">✓</span>Adresse email copiée</div>
+
+  <div id="image-lightbox" class="lightbox-hidden fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-md" role="dialog" aria-modal="true" aria-label="Aperçu de la capture en plein écran">
+    <button id="lightbox-close" class="button absolute right-5 top-5 z-10 grid h-12 w-12 place-items-center rounded-full bg-white/15 text-2xl text-white backdrop-blur hover:bg-white/25" aria-label="Fermer l’image">×</button>
+    <img id="lightbox-image" class="max-h-[84vh] max-w-[96vw] rounded-xl object-contain shadow-2xl" src="" alt="">
+    <p id="lightbox-caption" class="mt-4 rounded-full bg-white/10 px-5 py-2 text-center text-sm font-medium text-white"></p>
+  </div>
+
+  <script>
+    document.body.classList.add('motion-ready');
+
+    const motionItems = [
+      ...document.querySelectorAll('#experiences .timeline-item'),
+      ...document.querySelectorAll('#competences .core-tech'),
+      ...document.querySelectorAll('#projets .project-card'),
+      ...document.querySelectorAll('#services .grid > div')
+    ];
+    motionItems.forEach((item, index) => {
+      item.classList.add('motion-item');
+      item.style.setProperty('--motion-delay', `${(index % 6) * 90}ms`);
+    });
+    document.querySelectorAll('section h2').forEach(heading => heading.classList.add('section-heading'));
+
+    const motionObserver = new IntersectionObserver((entries, instance) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('motion-visible');
+        instance.unobserve(entry.target);
+      });
+    }, { threshold:.16 });
+    document.querySelectorAll('.motion-item, .section-heading').forEach(item => motionObserver.observe(item));
+
+    const menuButton = document.querySelector('#menu-button');
+    const mobileMenu = document.querySelector('#mobile-menu');
+    menuButton.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      menuButton.setAttribute('aria-expanded', String(!isOpen));
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+    const observer = new IntersectionObserver((entries, instance) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); instance.unobserve(entry.target); } });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
+
+    const animatedAvatar = document.querySelector('#animated-avatar');
+    const avatarObserver = new IntersectionObserver((entries, instance) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        window.setTimeout(() => entry.target.classList.add('is-greeting'), 350);
+        instance.unobserve(entry.target);
+      });
+    }, { threshold: .6 });
+    avatarObserver.observe(animatedAvatar);
+
+    const sections = [...document.querySelectorAll('main section[id]')];
+    const navLinks = [...document.querySelectorAll('#menu .nav-link')];
+    window.addEventListener('scroll', () => {
+      const current = sections.filter(section => window.scrollY >= section.offsetTop - 150).at(-1);
+      navLinks.forEach(link => link.classList.toggle('active', current && link.hash === `#${current.id}`));
+    }, { passive: true });
+    document.querySelector('#year').textContent = new Date().getFullYear();
+
+    const copyEmailButton = document.querySelector('#copy-email');
+    const copyToast = document.querySelector('#copy-toast');
+    let copyTimer;
+    const fallbackCopy = text => {
+      const field = document.createElement('textarea');
+      field.value = text;
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand('copy');
+      field.remove();
+    };
+    copyEmailButton.addEventListener('click', async () => {
+      const email = copyEmailButton.dataset.email;
+      try {
+        if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(email);
+        else fallbackCopy(email);
+        copyEmailButton.classList.add('copied');
+        copyEmailButton.querySelector('.copy-icon').textContent = '✓';
+        document.querySelector('#copy-label').textContent = 'Copié';
+        copyToast.classList.remove('toast-hidden');
+        window.clearTimeout(copyTimer);
+        copyTimer = window.setTimeout(() => {
+          copyEmailButton.classList.remove('copied');
+          copyEmailButton.querySelector('.copy-icon').textContent = '⧉';
+          document.querySelector('#copy-label').textContent = 'Copier';
+          copyToast.classList.add('toast-hidden');
+        }, 2400);
+      } catch (error) {
+        document.querySelector('#copy-label').textContent = 'Sélectionnez l’email';
+      }
+    });
+
+    document.querySelectorAll('.button, .clickable').forEach(element => {
+      element.addEventListener('click', event => {
+        const bounds = element.getBoundingClientRect();
+        const size = Math.max(bounds.width, bounds.height);
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${event.clientX - bounds.left - size / 2}px`;
+        ripple.style.top = `${event.clientY - bounds.top - size / 2}px`;
+        element.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 650);
+      });
+    });
+
+    const projectData = {
+      dental: {
+        label:'Application web · Centre dentaire',
+        title:'AKdental — Gestion des rendez-vous dentaires',
+        description:'AKdental est une application web conçue pour centraliser les rendez-vous, les patients et l’organisation quotidienne d’un centre dentaire. Des espaces adaptés à chaque rôle — administrateur, dentiste, assistante et patient — sécurisent les accès et simplifient le travail de chacun.',
+        repository:'https://github.com/manarzouheir/cabinet-dentaire',
+        tags:['Django','JavaScript','Tailwind CSS','SQL','Administration','Gestion multi-rôles'],
+        features:['Administration des comptes, rôles et accès','Planification et modification des rendez-vous','Gestion des patients et de leurs informations','Espaces dédiés au dentiste, à l’assistante et au patient','Consultation de l’agenda quotidien','Suivi du statut des rendez-vous','Authentification et permissions sécurisées'],
+        screenshots:[
+          { src:'assets/screenshots/login.png', label:'Page de connexion sécurisée', role:'commun' },
+          { src:'assets/screenshots/dentiste_interface.png', label:'Tableau de bord dentiste et gestion des créneaux', role:'dentiste' },
+          { src:'assets/screenshots/assistante_interface.png', label:'Interface assistante et gestion des rendez-vous', role:'assistante' },
+          { src:'assets/screenshots/patient_interface1.png', label:'Espace patient et prise de rendez-vous', role:'patient' },
+          { src:'assets/screenshots/crénaux.png', label:'Créneaux disponibles pour le patient', role:'patient' },
+          { src:'assets/screenshots/confirmation_patient.png', label:'Confirmation du rendez-vous patient', role:'patient' }
+        ]
+      },
+      aura: {
+        label:'Application e-commerce · .NET',
+        title:'AURA Perfume — Vente de parfums',
+        description:'AURA Perfume est une application web consacrée à la vente de parfums. Elle repose sur une architecture ASP.NET Core avec Razor Pages pour l’interface, Entity Framework Core pour l’accès aux données et SQL Server pour leur persistance.',
+        tags:['C#','ASP.NET Core','Razor Pages','Entity Framework Core','SQL Server'],
+        features:['Catalogue et recherche de parfums','Panier avec quantités, suppression et total','Commande avec informations de livraison et récapitulatif','Gestion des produits depuis l’espace administrateur','Développement backend en C# et ASP.NET Core','Accès aux données avec Entity Framework Core et SQL Server'],
+        screenshots:[
+          { src:'assets/screenshots/login_admin.png', label:'Connexion à l’espace administrateur', role:'administrateur' },
+          { src:'assets/screenshots/dash_admin.png', label:'Tableau de bord administrateur', role:'administrateur' },
+          { src:'assets/screenshots/modif_admin.png', label:'Modification d’une fiche parfum', role:'administrateur' },
+          { src:'assets/screenshots/dash_client.png', label:'Accueil client et catalogue de parfums', role:'client' },
+          { src:'assets/screenshots/parfum_client.png', label:'Catalogue, recherche et ajout au panier', role:'client' },
+          { src:'assets/screenshots/card_client.png', label:'Panier et préparation de la commande', role:'client' },
+          { src:'assets/screenshots/info_client.png', label:'Livraison et confirmation de la commande', role:'client' }
+        ]
+      },
+      quiznight: { label:'Application Android', title:'QuizNight', description:'QuizNight est une application Android développée en Java pour proposer une expérience de quiz simple et interactive.', tags:['Java','Android','Android Studio','Quiz interactif','Géolocalisation'], features:['Connexion et inscription utilisateur','Questions illustrées à choix multiples','Suivi de la progression et calcul du score','Nouvelle tentative et réinitialisation du quiz','Navigation par secousse du téléphone','Gestion du profil et déconnexion'], screenshots:[{ src:'assets/screenshots/Quiz_night.png', label:'Écran de connexion QuizNight', role:'commun' },{ src:'assets/screenshots/register.png', label:'Inscription et création de compte', role:'commun' },{ src:'assets/screenshots/location.png', label:'Autorisation d’accès à la localisation', role:'commun' },{ src:'assets/screenshots/quiz.png', label:'Question illustrée à choix multiples', role:'commun' },{ src:'assets/screenshots/score.png', label:'Résultat final et options de reprise', role:'commun' }] }
+    };
+    const modal = document.querySelector('#project-modal');
+    let activeScreenshots = [];
+    const roleLabels = { all:'Toutes', commun:'Connexion', administrateur:'Administrateur', client:'Client', dentiste:'Dentiste', assistante:'Assistante', patient:'Patient' };
+    const renderScreenshots = (role = 'all') => {
+      const galleryGrid = document.querySelector('#modal-gallery .gallery-grid');
+      const visible = role === 'all' ? activeScreenshots : activeScreenshots.filter(image => image.role === role);
+      galleryGrid.classList.add('is-changing');
+      window.setTimeout(() => {
+        galleryGrid.innerHTML = visible.map(image => `<button type="button" class="screenshot-slot" aria-label="Afficher en plein écran : ${image.label}"><span>${image.label}</span><img src="${image.src}" alt="Capture du projet : ${image.label}" data-caption="${image.label}" onerror="this.style.display='none'"><em class="role-badge">${roleLabels[image.role]}</em></button>`).join('');
+        galleryGrid.classList.remove('is-changing');
+      }, 160);
+      document.querySelectorAll('.gallery-filter').forEach(button => {
+        const selected = button.dataset.role === role;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+    };
+    const closeModal = () => { modal.classList.add('modal-hidden'); document.body.style.overflow = ''; };
+    document.querySelector('#modal-contact').addEventListener('click', closeModal);
+    const openProject = card => {
+      const data = projectData[card.dataset.project];
+      document.querySelector('#modal-label').textContent = data.label;
+      document.querySelector('#modal-title').textContent = data.title;
+      document.querySelector('#modal-description').textContent = data.description;
+      document.querySelector('#modal-tags').innerHTML = data.tags.map(tag => `<span class="rounded-full bg-olive-50 px-3 py-1.5 text-sm font-medium text-olive-700">${tag}</span>`).join('');
+      const githubButton = document.querySelector('#modal-github');
+      githubButton.classList.toggle('hidden', !data.repository);
+      githubButton.classList.toggle('inline-flex', Boolean(data.repository));
+      if (data.repository) githubButton.href = data.repository;
+      const features = document.querySelector('#modal-features');
+      features.classList.toggle('hidden', !data.features);
+      features.querySelector('ul').innerHTML = (data.features || []).map(feature => `<li class="flex gap-2"><span class="text-olive-500">✓</span>${feature}</li>`).join('');
+      const gallery = document.querySelector('#modal-gallery');
+      gallery.classList.toggle('hidden', !data.screenshots);
+      activeScreenshots = data.screenshots || [];
+      const roles = ['all', ...new Set(activeScreenshots.map(image => image.role).filter(role => role && role !== 'commun'))];
+      document.querySelector('#gallery-filters').innerHTML = roles.map((role, index) => `<button type="button" class="gallery-filter${index === 0 ? ' active' : ''}" data-role="${role}" aria-pressed="${index === 0}">${roleLabels[role]}</button>`).join('');
+      renderScreenshots('all');
+      modal.classList.remove('modal-hidden');
+      document.body.style.overflow = 'hidden';
+      document.querySelector('#modal-close').focus();
+    };
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('click', () => openProject(card));
+      card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openProject(card); } });
+    });
+    const lightbox = document.querySelector('#image-lightbox');
+    const lightboxImage = document.querySelector('#lightbox-image');
+    const closeLightbox = () => {
+      lightbox.classList.add('lightbox-hidden');
+      window.setTimeout(() => { lightboxImage.src = ''; }, 250);
+    };
+    document.querySelector('#modal-gallery').addEventListener('click', event => {
+      const filter = event.target.closest('.gallery-filter');
+      if (filter) { renderScreenshots(filter.dataset.role); return; }
+      const slot = event.target.closest('.screenshot-slot');
+      if (!slot) return;
+      const preview = slot.querySelector('img');
+      if (!preview || preview.style.display === 'none') return;
+      lightboxImage.src = preview.src;
+      lightboxImage.alt = preview.alt;
+      document.querySelector('#lightbox-caption').textContent = preview.dataset.caption;
+      lightbox.classList.remove('lightbox-hidden');
+      document.querySelector('#lightbox-close').focus();
+    });
+    document.querySelector('#lightbox-close').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', event => { if (event.target === lightbox) closeLightbox(); });
+    document.querySelector('#modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      if (!lightbox.classList.contains('lightbox-hidden')) closeLightbox();
+      else closeModal();
+    });
+
+    const updateProgress = () => {
+      const maximum = document.documentElement.scrollHeight - window.innerHeight;
+      document.querySelector('#scroll-progress').style.transform = `scaleX(${maximum ? window.scrollY / maximum : 0})`;
+    };
+    window.addEventListener('scroll', updateProgress, { passive:true });
+    updateProgress();
+
+    const heroCard = document.querySelector('#hero-card');
+    const allowsMotion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (allowsMotion && window.matchMedia('(pointer: fine)').matches) {
+      heroCard.addEventListener('pointermove', event => {
+        const bounds = heroCard.getBoundingClientRect();
+        const rotateY = ((event.clientX - bounds.left) / bounds.width - .5) * 7;
+        const rotateX = ((event.clientY - bounds.top) / bounds.height - .5) * -7;
+        heroCard.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
+      });
+      heroCard.addEventListener('pointerleave', () => { heroCard.style.transform = ''; });
+
+      const starColors = ['#566230','#6b7a3f','#7f894d','#a1a869','#c1c48a'];
+      const starShapes = ['✦','✧','⋆'];
+      let lastStarX = -100;
+      let lastStarY = -100;
+      let lastStarTime = 0;
+      document.addEventListener('pointermove', event => {
+        const now = performance.now();
+        const distance = Math.hypot(event.clientX - lastStarX, event.clientY - lastStarY);
+        if (distance < 11 || now - lastStarTime < 22) return;
+        lastStarX = event.clientX;
+        lastStarY = event.clientY;
+        lastStarTime = now;
+        const star = document.createElement('span');
+        star.className = 'cursor-star';
+        star.textContent = starShapes[Math.floor(Math.random() * starShapes.length)];
+        star.style.left = `${event.clientX}px`;
+        star.style.top = `${event.clientY}px`;
+        star.style.setProperty('--star-color', starColors[Math.floor(Math.random() * starColors.length)]);
+        star.style.setProperty('--star-size', `${8 + Math.random() * 10}px`);
+        star.style.setProperty('--star-x', `${(Math.random() - .5) * 24}px`);
+        star.style.setProperty('--star-y', `${-8 - Math.random() * 18}px`);
+        document.body.appendChild(star);
+        star.addEventListener('animationend', () => star.remove(), { once:true });
+      }, { passive:true });
+    }
+  </script>
+</body>
+</html>
